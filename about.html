@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Meet the Creative Mind Behind the Magic — Farah&#39;s</title>
+    <meta name="description" content="Learn about Farah&#39;s journey creating unforgettable memes and GIFs. Discover the passion and creativity behind your favorite entertainment content hub.">
+    <meta name="keywords" content="about Farah's, content creator, bronx and banco farah feather trim minidress, entertainment website, meme creator">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: 'fbf1826f-9709-4b95-963e-8b582f81f344',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="Meet the Creative Mind Behind the Magic — Farah's">
+  <meta property="og:description" content="Learn about Farah's journey creating unforgettable memes and GIFs. Discover the passion and creativity behind your favorite entertainment content hub.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Meet the Creative Mind Behind the Magic — Farah's">
+  <meta name="twitter:description" content="Learn about Farah's journey creating unforgettable memes and GIFs. Discover the passion and creativity behind your favorite entertainment content hub.">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: #333 !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))), .sub-menu:not(:has(li)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .sub-menu.mobile-expanded { max-height: 500px !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-dark) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-dark) !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-dark) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      #mic-access-tool-general-button, .mic-access-tool-general-button,
+      #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+      ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+      #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+      }
+    </style>
+</head>
+<body>
+
+
+    <div class="mobile-search-panel" id="mobile-search-panel">
+      <div class="search-wrapper">
+        <input type="text" id="mobile-search-input" placeholder="Search products..." autocomplete="off">
+        <button class="search-submit" id="mobile-search-submit" title="Search">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+        </button>
+        <button class="close-search" id="close-mobile-search">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="search-results" id="mobile-search-results"></div>
+    </div>
+  
+<script>window.ZAPPY_WEBSITE_ID = "fbf1826f-9709-4b95-963e-8b582f81f344";window.ZAPPY_API_BASE = (window.location.pathname.includes('/preview') ? "https://api.zappy5.com" : "https://api.zappy5.com");</script>
+  <nav class="navbar">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+    <svg class="hamburger-icon" width="24" height="24" viewbox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewbox="0 0 24 24" fill="none" style="display:none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+  
+  <button class="phone-header-btn" aria-label="Call">
+    <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+  
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="/" class="logo-link">
+        <img src="/assets/farah-s-entertainment-content-logo.webp" alt="Farah&#39;s" class="logo">
+      </a>
+    </div>
+    
+    <ul class="nav-menu" id="navMenu">
+
+    <li class="menu-item-has-children zappy-products-dropdown">
+      <a href="/products">
+        Products
+        <svg class="dropdown-arrow" width="12" height="12" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      </a>
+      <ul class="sub-menu" id="zappy-nav-category-links">
+        <li><a href="/products">All Products</a></li>
+        <!-- Categories will be loaded dynamically -->
+      </ul>
+    </li>
+  <li><a href="/gallery">Gallery</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li></ul><div class="nav-ecommerce-icons nav-icons-left"><a href="/login" class="login-link nav-login" title="Login"><svg class="login-icon" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a><a href="#cart" class="cart-link nav-cart" id="cart-drawer-toggle" title="Cart"><svg class="cart-icon" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><span class="cart-count">0</span></a><div class="nav-search-box">
+    <input type="text" class="nav-search-input" id="nav-search-input" placeholder="Search products..." autocomplete="off">
+    <button class="nav-search-btn" id="nav-search-btn" title="Search">
+      <svg class="search-icon" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+    </button>
+    <div class="nav-search-results" id="nav-search-results"></div>
+  </div></div><div class="nav-ecommerce-icons nav-icons-right"><button class="nav-search-toggle" id="mobile-search-toggle" title="Search"><svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg></button></div>
+    
+    
+  </div>
+</nav>
+
+    <nav class="zappy-catalog-menu ltr" id="zappy-catalog-menu" dir="ltr">
+      <div class="catalog-menu-container">
+        <a href="/products" class="catalog-menu-item catalog-menu-all">All Products</a>
+        <div class="catalog-menu-categories" id="zappy-category-links">
+          <!-- Categories will be loaded dynamically -->
+        </div>
+      </div>
+    </nav>
+  
+  
+  <main>
+    <section class="about-story-section" data-layout-spec="About-story">
+  <div class="about-story-container">
+    <div class="about-story-content">
+      <h1>About Farah's</h1>
+      <p>What started as a personal collection of internet gold has evolved into a curated gallery experience. Farah's was born from the belief that memes and visual content deserve more than endless scrolling—they deserve presentation, context, and appreciation.</p>
+      <p>We approach content curation like a contemporary art gallery: each piece is selected for its cultural relevance, visual impact, and ability to spark joy. No algorithm chaos, no infinite feeds—just premium presentation of internet culture's finest moments.</p>
+      <div class="about-story-mission">
+        <h3>The Mission</h3>
+        <p>To elevate memes and pictures from disposable content to collectible moments, presented with the care and attention traditionally reserved for fine art galleries.</p>
+      </div>
+    </div>
+    <div class="about-story-image-container">
+      <div class="about-story-image-frame">
+        <img data-placeholder="about-story-image-1" data-context="A stylish gallery wall featuring framed memes and internet culture imagery displayed like contemporary art pieces, with soft holographic lighting effects and a premium editorial aesthetic for an entertainment content platform" width="600" height="700" src="/assets/site-about-story-image-1.webp" alt="Gallery-style presentation of curated memes and content at Farah's">
+      </div>
+    </div>
+  </div>
+  <div class="about-story-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="about-story-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(0,212,255,0.3);stop-opacity:1"></stop>
+          <stop offset="50%" style="stop-color:rgba(255,79,216,0.25);stop-opacity:1"></stop>
+          <stop offset="100%" style="stop-color:rgba(92,77,255,0.3);stop-opacity:1"></stop>
+        </linearGradient>
+      </defs>
+      <path d="M0,60 L0,20 Q100,25 200,18 T400,22 Q500,18 600,25 T800,20 Q900,24 1000,18 T1200,22 L1200,60 Z" fill="#0B0F1A" opacity="0.6"></path>
+      <path d="M0,60 L0,30 Q150,35 300,28 T600,32 Q750,28 900,35 T1200,30 L1200,60 Z" fill="#0B0F1A"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="about-values-section" data-layout-spec="About-values">
+  <div class="about-values-container">
+    <div class="about-values-header">
+      <h2>What Farah's Optimizes For</h2>
+      <p>Every piece of content is selected with intention—delivering visual impact, shareability, and editorial polish that transforms casual scrolling into a curated experience.</p>
+    </div>
+    
+    <div class="about-values-grid">
+      <div class="value-card">
+        <div class="value-icon">
+          <svg data-element-type="icon" data-icon-type="svg" width="48" height="48" viewbox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"></rect>
+            <rect x="26" y="8" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"></rect>
+            <rect x="8" y="26" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"></rect>
+            <circle cx="33" cy="33" r="6" stroke="currentColor" stroke-width="2" fill="none"></circle>
+            <path d="M33 30 L33 36 M30 33 L36 33" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <h3>Curation Over Volume</h3>
+        <p>We prioritize quality and relevance, handpicking content that resonates rather than flooding feeds with noise.</p>
+      </div>
+      
+      <div class="value-card">
+        <div class="value-icon">
+          <svg data-element-type="icon" data-icon-type="svg" width="48" height="48" viewbox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="12" width="28" height="24" rx="2" stroke="currentColor" stroke-width="2" fill="none"></rect>
+            <path d="M10 20 L38 20" stroke="currentColor" stroke-width="2"></path>
+            <circle cx="16" cy="16" r="1.5" fill="currentColor"></circle>
+            <circle cx="20" cy="16" r="1.5" fill="currentColor"></circle>
+            <circle cx="24" cy="16" r="1.5" fill="currentColor"></circle>
+            <path d="M16 26 L32 26 M16 30 L28 30" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <h3>Readable, Shareable Presentation</h3>
+        <p>Clean layouts and intuitive design ensure every meme and image is easy to view, enjoy, and share across platforms.</p>
+      </div>
+      
+      <div class="value-card">
+        <div class="value-icon">
+          <svg data-element-type="icon" data-icon-type="svg" width="48" height="48" viewbox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 8 L28 16 L37 17.5 L30.5 24 L32 33 L24 28.5 L16 33 L17.5 24 L11 17.5 L20 16 Z" stroke="currentColor" stroke-width="2" fill="none"></path>
+            <circle cx="24" cy="24" r="3" fill="currentColor"></circle>
+            <path d="M24 4 L24 12 M24 36 L24 44 M4 24 L12 24 M36 24 L44 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <h3>Glossy Energy With Editorial Discipline</h3>
+        <p>We blend vibrant, eye-catching aesthetics with structured curation—delivering premium content that feels both exciting and intentional.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="about-values-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 L0,45 L10,45 L10,50 L20,50 L20,40 L30,40 L30,48 L40,48 L40,42 L50,42 L50,50 L60,50 L60,46 L70,46 L70,52 L80,52 L80,44 L90,44 L90,50 L100,50 L100,46 L110,46 L110,48 L120,48 L120,44 L130,44 L130,50 L140,50 L140,46 L150,46 L150,52 L160,52 L160,40 L170,40 L170,48 L180,48 L180,44 L190,44 L190,50 L200,50 L200,46 L210,46 L210,52 L220,52 L220,42 L230,42 L230,48 L240,48 L240,44 L250,44 L250,50 L260,50 L260,46 L270,46 L270,48 L280,48 L280,44 L290,44 L290,50 L300,50 L300,40 L310,40 L310,48 L320,48 L320,44 L330,44 L330,50 L340,50 L340,46 L350,46 L350,52 L360,52 L360,42 L370,42 L370,48 L380,48 L380,44 L390,44 L390,50 L400,50 L400,46 L410,46 L410,48 L420,48 L420,44 L430,44 L430,50 L440,50 L440,46 L450,46 L450,52 L460,52 L460,40 L470,40 L470,48 L480,48 L480,44 L490,44 L490,50 L500,50 L500,46 L510,46 L510,52 L520,52 L520,42 L530,42 L530,48 L540,48 L540,44 L550,44 L550,50 L560,50 L560,46 L570,46 L570,48 L580,48 L580,44 L590,44 L590,50 L600,50 L600,40 L610,40 L610,48 L620,48 L620,44 L630,44 L630,50 L640,50 L640,46 L650,46 L650,52 L660,52 L660,42 L670,42 L670,48 L680,48 L680,44 L690,44 L690,50 L700,50 L700,46 L710,46 L710,48 L720,48 L720,44 L730,44 L730,50 L740,50 L740,46 L750,46 L750,52 L760,52 L760,40 L770,40 L770,48 L780,48 L780,44 L790,44 L790,50 L800,50 L800,46 L810,46 L810,52 L820,52 L820,42 L830,42 L830,48 L840,48 L840,44 L850,44 L850,50 L860,50 L860,46 L870,46 L870,48 L880,48 L880,44 L890,44 L890,50 L900,50 L900,40 L910,40 L910,48 L920,48 L920,44 L930,44 L930,50 L940,50 L940,46 L950,46 L950,52 L960,52 L960,42 L970,42 L970,48 L980,48 L980,44 L990,44 L990,50 L1000,50 L1000,46 L1010,46 L1010,48 L1020,48 L1020,44 L1030,44 L1030,50 L1040,50 L1040,46 L1050,46 L1050,52 L1060,52 L1060,40 L1070,40 L1070,48 L1080,48 L1080,44 L1090,44 L1090,50 L1100,50 L1100,46 L1110,46 L1110,52 L1120,52 L1120,42 L1130,42 L1130,48 L1140,48 L1140,44 L1150,44 L1150,50 L1160,50 L1160,46 L1170,46 L1170,48 L1180,48 L1180,44 L1190,44 L1190,50 L1200,50 L1200,60 Z" fill="#EEEAFB"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="about-team-section" data-layout-spec="About-team">
+  <div class="about-team-container">
+    <div class="about-team-header">
+      <h2>The People Behind the Exhibit</h2>
+      <p>Meet the creative minds who curate, design, and shape our visual universe—bringing you the finest memes and content with gallery-level precision.</p>
+    </div>
+    
+    <div class="about-team-grid">
+      <div class="about-team-card">
+        <div class="about-team-image-wrapper">
+          <img data-placeholder="about-team-image-1" data-context="Professional portrait of a creative curator in a modern gallery setting, artistic and confident expression, contemporary style with soft lighting, entertainment/content industry professional" width="300" height="400" src="/assets/site-about-team-image-1.webp" alt="Curator portrait">
+        </div>
+        <div class="about-team-info">
+          <h3>Alex Rivera</h3>
+          <p>Curator — Selects and organizes the finest memes with a critical eye for cultural resonance and visual impact.</p>
+        </div>
+      </div>
+      
+      <div class="about-team-card">
+        <div class="about-team-image-wrapper">
+          <img data-placeholder="about-team-image-2" data-context="Professional portrait of a visual designer working with digital content, creative and innovative look, modern tech-forward aesthetic, entertainment/content industry professional" width="300" height="400" src="/assets/site-about-team-image-2.webp" alt="Visual Designer portrait">
+        </div>
+        <div class="about-team-info">
+          <h3>Jordan Kim</h3>
+          <p>Visual Designer — Crafts the holographic gradients and editorial layouts that transform content into contemporary art.</p>
+        </div>
+      </div>
+      
+      <div class="about-team-card">
+        <div class="about-team-image-wrapper">
+          <img data-placeholder="about-team-image-3" data-context="Professional portrait of a community editor reviewing content on a tablet, approachable and engaged expression, modern collaborative workspace, entertainment/content industry professional" width="300" height="400" src="/assets/site-about-team-image-3.webp" alt="Community Editor portrait">
+        </div>
+        <div class="about-team-info">
+          <h3>Sam Torres</h3>
+          <p>Community Editor — Engages with our audience and ensures every piece of content resonates with the community's voice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="about-team-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 L0,35 Q60,30 120,35 T240,30 Q300,35 360,30 T480,35 Q540,30 600,35 T720,30 Q780,35 840,30 T960,35 Q1020,30 1080,35 T1200,30 L1200,60 Z" fill="#EEEAFB"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="about-stats-section" data-layout-spec="About-stats">
+  <div class="about-stats-container">
+    <div class="about-stats-grid">
+      <div class="stat-block">
+        <h2 class="stat-number">52</h2>
+        <p class="stat-label">Weekly Drops</p>
+        <p class="stat-description">Fresh curated content delivered every week</p>
+      </div>
+      <div class="stat-block">
+        <h2 class="stat-number">12</h2>
+        <p class="stat-label">Curated Exhibits</p>
+        <p class="stat-description">Themed collections showcasing the best of Farah's</p>
+      </div>
+      <div class="stat-block">
+        <h2 class="stat-number">1.2K</h2>
+        <p class="stat-label">Community Suggestions</p>
+        <p class="stat-description">Member-submitted content shaping our gallery</p>
+      </div>
+      <div class="stat-block">
+        <h2 class="stat-number">8</h2>
+        <p class="stat-label">Categories in Rotation</p>
+        <p class="stat-description">Diverse themes keeping the feed dynamic</p>
+      </div>
+    </div>
+  </div>
+  <div class="about-stats-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="about-stats-glass-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:rgba(0,212,255,0.25);stop-opacity:1"></stop>
+          <stop offset="50%" style="stop-color:rgba(255,79,216,0.20);stop-opacity:1"></stop>
+          <stop offset="100%" style="stop-color:rgba(92,77,255,0.22);stop-opacity:1"></stop>
+        </linearGradient>
+      </defs>
+      <path d="M0,60 L0,45 Q200,30 400,38 T800,32 Q1000,38 1200,25 L1200,60 Z" fill="#0B0F1A" opacity="0.6"></path>
+      <path d="M0,60 L0,48 Q200,33 400,41 T800,35 Q1000,41 1200,28 L1200,60 Z" fill="#0B0F1A"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="about-cta-section" data-layout-spec="About-cta">
+  <div class="about-cta-container">
+    <h2>Collaborate With the Gallery</h2>
+    <p>Have a theme idea, a meme collection concept, or a picture series? Send it in and help shape the next exhibit.</p>
+    <a href="/contact" class="btn-primary">Contact Farah's</a>
+  </div>
+</section>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-top">
+      <div class="footer-column footer-about">
+        <img src="/assets/farah-s-entertainment-content-logo.webp" alt="Farah&#39;s" class="logo">
+        <p class="footer-tagline">Your destination for premium entertainment and engaging content.</p>
+      </div>
+      
+      <div class="footer-column footer-links">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-nav">
+          <li><a href="/gallery">Gallery</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-contact">
+        <h3 class="footer-heading">Contact Us</h3>
+        <ul class="contact-list">
+          <li><i class="fas fa-envelope"></i> <a href="mailto:[business_email]">[business_email]</a></li>
+          <li><i class="fas fa-phone"></i> <a href="tel:[business_phone]">[business_phone]</a></li>
+          <li><a href="/"><i class="fas fa-map-marker-alt"></i> <span>[business_address]</span></a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-social">
+        <h3 class="footer-heading">Follow Us</h3>
+        <div class="social-links">
+          <a href="[facebook_handle]" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="[instagram_handle]" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="[whatsapp_handle]" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <p class="copyright">© 2026 Farah's. All rights reserved.</p>
+      </div>
+      <div class="footer-bottom-right">
+        <ul class="legal-links">
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a><span class="separator">|</span>
+            <a href="/return-policy" aria-label="Return Policy">
+              Return Policy
+            </a></li>
+          <li><a href="/accessibility">Accessibility</a></li>
+        </ul>
+        <a href="https://zappy5.com" target="_blank" class="zappy-attribution">Generated by Zappy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+
+    <script id="zappy-navbar-scroll-effect">
+    (function(){var nb=document.querySelector('nav.navbar,.navbar:not(.zappy-catalog-menu)');var cm=document.querySelector('.zappy-catalog-menu');if(!nb)return;var fb='rgba(11,15,26,0.85)';var th=60;nb.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease,box-shadow 0.3s ease';if(cm)cm.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease';function onS(){var y=window.scrollY||window.pageYOffset;if(y>th){nb.style.background=fb;nb.style.backdropFilter='blur(12px)';nb.style.webkitBackdropFilter='blur(12px)';nb.style.boxShadow='0 2px 16px rgba(0,0,0,0.12)';if(cm){cm.style.background=fb;cm.style.backdropFilter='blur(12px)';cm.style.webkitBackdropFilter='blur(12px)';}}else{nb.style.background='transparent';nb.style.backdropFilter='none';nb.style.webkitBackdropFilter='none';nb.style.boxShadow='none';if(cm){cm.style.background='transparent';cm.style.backdropFilter='none';cm.style.webkitBackdropFilter='none';}}}window.addEventListener('scroll',onS,{passive:true});onS();})();
+    </script>
+</body>
+</html>
